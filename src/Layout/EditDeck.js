@@ -1,32 +1,35 @@
-import React from "react";
-import { useHistory, Link } from "react-router-dom";
-import { useState } from "react";
-import { createDeck } from "../utils/api/index";
+import React, { useState, useEffect } from "react";
+import { readDeck, updateDeck } from "../utils/api";
+import { useParams, useHistory, Link } from "react-router-dom";
 
-function CreateDeck() {
-  const [newDeck, setNewDeck] = useState({});
+function EditDeck() {
   const history = useHistory();
+  const [deck, setDeck] = useState({});
+  const { deckId } = useParams();
+  useEffect(() => {
+    async function fetchDeck() {
+      const currDeck = await readDeck(deckId);
+      setDeck(currDeck);
+    }
+    fetchDeck();
+  }, [deckId]);
 
   async function handleSubmit(event) {
     event.preventDefault();
-    const response = await createDeck(newDeck);
-    history.push(`/decks/${response.id}`);
+    await updateDeck(deck);
+    history.push(`/decks/${deck.id}`);
   }
-  const handleCancel = (event) => {
-    event.preventDefault();
-    history.push("/");
-  };
 
-  const handleNameChange = (event) => {
-    setNewDeck({ ...newDeck, name: event.target.value });
-  };
+  function handleNameChange(event) {
+    setDeck({ ...deck, name: event.target.value });
+  }
 
-  const handleDescriptionChange = (event) => {
-    setNewDeck({ ...newDeck, description: event.target.value });
-  };
+  function handleDescriptionChange(event) {
+    setDeck({ ...deck, description: event.target.value });
+  }
 
   return (
-    <React.Fragment>
+    <div>
       <nav aria-label="breadcrumb">
         <ol className="breadcrumb">
           <li className="breadcrumb-item">
@@ -44,13 +47,16 @@ function CreateDeck() {
               {"Home"}
             </Link>
           </li>
+          <li className="breadcrumb-item">
+            <Link to={`/decks/${deckId}`}>{deck.name}</Link>
+          </li>
           <li className="breadcrumb-item active" aria-current="page">
-            Create Deck
+            Edit Deck
           </li>
         </ol>
       </nav>
 
-      <h1> Create Deck</h1>
+      <h1>Edit Deck</h1>
 
       <form name="create">
         <div className="form-group">
@@ -59,8 +65,7 @@ function CreateDeck() {
             type="text"
             className="form-control"
             id="name"
-            placeholder="Deck Name"
-            required
+            value={deck.name}
             onChange={handleNameChange}
           />
         </div>
@@ -70,14 +75,14 @@ function CreateDeck() {
             className="form-control"
             id="Textarea"
             rows="3"
-            placeholder="Brief description of the deck"
+            value={deck.description}
             onChange={handleDescriptionChange}
           ></textarea>
         </div>
         <button
           type="submit"
           className="btn btn-secondary mr-2"
-          onClick={handleCancel}
+          onClick={() => history.push(`/decks/${deckId}`)}
         >
           Cancel
         </button>
@@ -89,8 +94,8 @@ function CreateDeck() {
           Submit
         </button>
       </form>
-    </React.Fragment>
+    </div>
   );
 }
 
-export default CreateDeck;
+export default EditDeck;
