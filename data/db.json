@@ -29,6 +29,11 @@
       "name": "asd",
       "description": "asd",
       "id": 9
+    },
+    {
+      "name": "wqe",
+      "description": "qwe",
+      "id": 10
     }
   ],
   "cards": [
@@ -139,6 +144,12 @@
       "back": "ad",
       "deckId": 9,
       "id": 27
+    },
+    {
+      "front": "qwe",
+      "back": "qwe",
+      "deckId": 10,
+      "id": 28
     }
   ]
 }
