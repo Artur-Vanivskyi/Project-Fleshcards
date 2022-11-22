@@ -8,10 +8,8 @@ function Home() {
   const [decks, setDecks] = useState([]);
 
   useEffect(() => {
-    console.log("useEffects runs");
     async function fetchDecks() {
       const data = await listDecks();
-      console.log(data);
       setDecks(data);
     }
     fetchDecks();
